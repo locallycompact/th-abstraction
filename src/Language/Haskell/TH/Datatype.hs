@@ -812,7 +812,11 @@ normalizeDecFor isReified dec =
         [] -- No kind variables
 #endif
 
+#if MIN_VERSION_template_haskell(2,21,0)
+    normalizeDataD :: Cxt -> Name -> [TyVarBndrUnit] -> Maybe Kind
+#else
     normalizeDataD :: Cxt -> Name -> [TyVarBndrVis] -> Maybe Kind
+#endif
                    -> [Con] -> DatatypeVariant -> Q DatatypeInfo
     normalizeDataD context name tyvars mbKind cons variant = do
       -- NB: use `filter isRequiredTvb tyvars` here. It is possible for some of
@@ -2654,7 +2658,11 @@ repair13618 info =
 dataDCompat ::
   CxtQ           {- ^ context                 -} ->
   Name           {- ^ type constructor        -} ->
+#if MIN_VERSION_template_haskell(2,21,0)
+  [TyVarBndrUnit] {- ^ type parameters         -} ->
+#else
   [TyVarBndrVis] {- ^ type parameters         -} ->
+#endif
   [ConQ]         {- ^ constructor definitions -} ->
   [Name]         {- ^ derived class names     -} ->
   DecQ
@@ -2674,7 +2682,11 @@ dataDCompat = dataD
 newtypeDCompat ::
   CxtQ           {- ^ context                 -} ->
   Name           {- ^ type constructor        -} ->
+#if MIN_VERSION_template_haskell(2,21,0)
+  [TyVarBndrUnit] {- ^ type parameters         -} ->
+#else
   [TyVarBndrVis] {- ^ type parameters         -} ->
+#endif
   ConQ           {- ^ constructor definition  -} ->
   [Name]         {- ^ derived class names     -} ->
   DecQ
